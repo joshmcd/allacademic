@@ -7,7 +7,6 @@
 	
 
 require 'mechanize'
-require 'wkhtmltopdf'
 require 'pdfkit'
 
 agent = Mechanize.new
@@ -21,18 +20,19 @@ text = parsed.css("html", "body", "center", "table", "tbody", "tr", "td", "table
 css = File.open('css.css', 'w') { |i| i << parsed.css('style') }
 css = File.open('css.css', 'r')
 
-File.open('~/test.html', 'w') do |i|
+File.open('/home/josh/test.html', 'w') do |i|
   i << '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />' #have to add this so it doesn't screw up the encoding
   css.each_line { |p| i << p }
 end
 
+#this works when done individually, so there must be a better way
 while page.link_with(:text => "next") == true
 	page = page.link_with(:text => "next").click
 	parsed = page.parser
 	text << parsed.css("html", "body", "center", "table", "tbody", "tr", "td", "table", "tbody", "tr", "td", "table.messages_box", "tbody", "tr.messages_box", "td.messages_box", "table.messages_box_off", "tbody", "tr.messages_box_off", "td.messages_box_off", "table tbody tr td div")[43]
 end
 
-File.open('~/test.html', 'w') do |i|
+File.open('/home/josh/test.html', 'w') do |i|
 	i << text
 end
 
